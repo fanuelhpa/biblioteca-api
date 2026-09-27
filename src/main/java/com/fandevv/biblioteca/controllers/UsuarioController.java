@@ -1,5 +1,6 @@
 package com.fandevv.biblioteca.controllers;
 
+import com.fandevv.biblioteca.dto.UsuarioEmprestimoDTO;
 import com.fandevv.biblioteca.dto.UsuarioResponseDTO;
 import com.fandevv.biblioteca.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/usuarios")
@@ -28,5 +31,11 @@ public class UsuarioController {
     public ResponseEntity<UsuarioResponseDTO> findById(@PathVariable Long id) {
         UsuarioResponseDTO result = service.findById(id);
         return ResponseEntity.ok().body(result);
+    }
+
+    @GetMapping(value = "/{id}/emprestimos")
+    public ResponseEntity<List<UsuarioEmprestimoDTO>> searchEmprestimosById(@PathVariable Long id){
+        List<UsuarioEmprestimoDTO> dto = service.searchEmprestimosById(id);
+        return ResponseEntity.ok().body(dto);
     }
 }
