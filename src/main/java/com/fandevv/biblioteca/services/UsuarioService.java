@@ -1,8 +1,10 @@
 package com.fandevv.biblioteca.services;
 
 import com.fandevv.biblioteca.dto.UsuarioEmprestimoDTO;
+import com.fandevv.biblioteca.dto.UsuarioRequestDTO;
 import com.fandevv.biblioteca.dto.UsuarioResponseDTO;
 import com.fandevv.biblioteca.entities.Usuario;
+import com.fandevv.biblioteca.enums.StatusUsuario;
 import com.fandevv.biblioteca.projections.UsuarioEmprestimoProjection;
 import com.fandevv.biblioteca.repositories.UsuarioRepository;
 import com.fandevv.biblioteca.services.exceptions.ResourceNotFoundException;
@@ -39,5 +41,19 @@ public class UsuarioService {
         List<UsuarioEmprestimoProjection> listProjection = repository.searchEmprestimosById(id);
         List<UsuarioEmprestimoDTO> listDto = listProjection.stream().map(x -> new UsuarioEmprestimoDTO(x)).collect(Collectors.toList());
         return listDto;
+    }
+
+    @Transactional
+    public UsuarioResponseDTO insert(UsuarioRequestDTO requestDto) {
+        Usuario usuario = new Usuario();
+        usuario.setNome(requestDto.getNome());
+        usuario.setEmail(requestDto.getEmail());
+        usuario.setTelefone(requestDto.getTelefone());
+        usuario.setCpf(requestDto.getCpf());
+        usuario.setStatus(StatusUsuario.ATIVO);
+
+        usuario = repository.save(usuario);
+
+        return new UsuarioResponseDTO(usuario);
     }
 }
