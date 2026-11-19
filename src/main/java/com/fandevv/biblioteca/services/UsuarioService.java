@@ -39,6 +39,9 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public List<UsuarioEmprestimoDTO> searchEmprestimosById(Long id) {
         List<UsuarioEmprestimoProjection> listProjection = repository.searchEmprestimosById(id);
+        if(listProjection.isEmpty()) {
+            throw new ResourceNotFoundException("Recurso não encontrado");
+        }
         List<UsuarioEmprestimoDTO> listDto = listProjection.stream().map(x -> new UsuarioEmprestimoDTO(x)).collect(Collectors.toList());
         return listDto;
     }
