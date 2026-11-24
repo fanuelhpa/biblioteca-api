@@ -51,4 +51,10 @@ public class UsuarioController {
         UsuarioResponseDTO responseDTO = service.update(id, requestDTO);
         return ResponseEntity.ok(responseDTO);
     }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }
