@@ -7,8 +7,11 @@ import com.fandevv.biblioteca.entities.Usuario;
 import com.fandevv.biblioteca.enums.StatusUsuario;
 import com.fandevv.biblioteca.projections.UsuarioEmprestimoProjection;
 import com.fandevv.biblioteca.repositories.UsuarioRepository;
+import com.fandevv.biblioteca.services.exceptions.DatabaseException;
 import com.fandevv.biblioteca.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -48,15 +51,32 @@ public class UsuarioService {
 
     @Transactional
     public UsuarioResponseDTO insert(UsuarioRequestDTO requestDto) {
-        Usuario usuario = new Usuario();
-        usuario.setNome(requestDto.getNome());
-        usuario.setEmail(requestDto.getEmail());
-        usuario.setTelefone(requestDto.getTelefone());
-        usuario.setCpf(requestDto.getCpf());
-        usuario.setStatus(StatusUsuario.ATIVO);
+       try {
+           Usuario usuario = new Usuario();
+           usuario.setNome(requestDto.getNome());
+           usuario.setEmail(requestDto.getEmail());
+           usuario.setTelefone(requestDto.getTelefone());
+           usuario.setCpf(requestDto.getCpf());
+           usuario.setStatus(requestDto.getStatus());
+           usuario = repository.save(usuario);
+           return new UsuarioResponseDTO(usuario);
+       }catch(DataIntegrityViolationException e) {
+           throw new DatabaseException("Email e/ou CPF já cadastrados no sistema");
+       }
+    }
 
-        usuario = repository.save(usuario);
-
-        return new UsuarioResponseDTO(usuario);
+    @Transactional
+    public UsuarioResponseDTO update(Long id, UsuarioRequestDTO requestDTO) {
+        try {
+            Usuario usuario = repository.getReferenceById(id);
+            usuario.setNome(requestDTO.getNome());
+            usuario.setEmail(requestDTO.getEmail());
+            usuario.setTelefone(requestDTO.getTelefone());
+            usuario.setStatus(requestDTO.getStatus());
+            usuario = repository.save(usuario);
+            return new UsuarioResponseDTO(usuario);
+        }catch(EntityNotFoundException e) {
+            throw new ResourceNotFoundException("Recurso não encontrado");
+        }
     }
 }

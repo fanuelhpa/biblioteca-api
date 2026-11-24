@@ -45,4 +45,10 @@ public class UsuarioController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("{/id}").buildAndExpand(responseDTO.getId()).toUri();
         return ResponseEntity.created(uri).body(responseDTO);
     }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UsuarioResponseDTO> update(@PathVariable Long id, @RequestBody UsuarioRequestDTO requestDTO) {
+        UsuarioResponseDTO responseDTO = service.update(id, requestDTO);
+        return ResponseEntity.ok(responseDTO);
+    }
 }
