@@ -4,6 +4,7 @@ import com.fandevv.biblioteca.dto.AutorDTO;
 import com.fandevv.biblioteca.entities.Autor;
 import com.fandevv.biblioteca.repositories.AutorRepository;
 import com.fandevv.biblioteca.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,10 +34,26 @@ public class AutorService {
     @Transactional
     public AutorDTO insert(AutorDTO autorDTO) {
         Autor autor = new Autor();
-        autor.setId(autorDTO.getId());
-        autor.setNome(autorDTO.getNome());
-        autor.setNacionalidade(autorDTO.getNacionalidade());
+        copyDtoToEntity(autorDTO, autor);
         autor = repository.save(autor);
         return new AutorDTO(autor);
+    }
+
+    @Transactional
+    public AutorDTO update(Long id, AutorDTO autorDTO) {
+        try {
+            Autor autor = repository.getReferenceById(id);
+            copyDtoToEntity(autorDTO, autor);
+            autor = repository.save(autor);
+            return new AutorDTO(autor);
+        }catch(EntityNotFoundException e) {
+            throw new ResourceNotFoundException("Recurso não encontrado");
+        }
+    }
+
+    private void copyDtoToEntity(AutorDTO autorDTO, Autor autor) {
+
+        autor.setNome(autorDTO.getNome());
+        autor.setNacionalidade(autorDTO.getNacionalidade());
     }
 }

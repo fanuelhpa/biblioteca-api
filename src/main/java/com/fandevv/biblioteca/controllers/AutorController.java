@@ -37,4 +37,10 @@ public class AutorController {
                 .buildAndExpand(autorDTO.getId()).toUri();
         return ResponseEntity.created(uri).body(autorDTO);
     }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<AutorDTO> update(@PathVariable Long id, @RequestBody AutorDTO autorDTO) {
+        autorDTO = service.update(id, autorDTO);
+        return ResponseEntity.ok(autorDTO);
+    }
 }
