@@ -19,7 +19,7 @@ public class Autor {
     private String nome;
     private String nacionalidade;
 
-    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "autor")
     private List<Livro> livros = new ArrayList<>();
 
     public Autor() {

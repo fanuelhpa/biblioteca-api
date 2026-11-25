@@ -2,23 +2,23 @@ package com.fandevv.biblioteca.dto;
 
 import com.fandevv.biblioteca.entities.Autor;
 
-public class AutorResponseDTO {
+public class AutorDTO {
 
     private Long id;
     private String nome;
     private String nacionalidade;
 
-    public AutorResponseDTO() {
+    public AutorDTO() {
 
     }
 
-    public AutorResponseDTO(Long id, String nome, String nacionalidade) {
+    public AutorDTO(Long id, String nome, String nacionalidade) {
         this.id = id;
         this.nome = nome;
         this.nacionalidade = nacionalidade;
     }
 
-    public AutorResponseDTO(Autor entity) {
+    public AutorDTO(Autor entity) {
         id = entity.getId();
         nome = entity.getNome();
         nacionalidade = entity.getNacionalidade();
