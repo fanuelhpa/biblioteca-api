@@ -3,10 +3,13 @@ package com.fandevv.biblioteca.services;
 import com.fandevv.biblioteca.dto.AutorDTO;
 import com.fandevv.biblioteca.entities.Autor;
 import com.fandevv.biblioteca.repositories.AutorRepository;
+import com.fandevv.biblioteca.services.exceptions.DatabaseException;
 import com.fandevv.biblioteca.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -48,6 +51,18 @@ public class AutorService {
             return new AutorDTO(autor);
         }catch(EntityNotFoundException e) {
             throw new ResourceNotFoundException("Recurso não encontrado");
+        }
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void delete(Long id) {
+        if(!repository.existsById(id)) {
+            throw new ResourceNotFoundException("Recurso não encontrado!");
+        }
+        try {
+            repository.deleteById(id);
+        } catch(DataIntegrityViolationException e) {
+            throw new DatabaseException("Erro de violação de integridade referencial");
         }
     }
 
